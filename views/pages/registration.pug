@@ -1,0 +1,27 @@
+doctype
+head
+	meta(charset="utf-8")
+	title Registration
+	link(rel="stylesheet" href="/css/style.css")
+	link(href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css", rel="stylesheet", integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u", crossorigin="anonymous")
+
+body
+	.container.back-to-home-container
+		a(href="/").btn.btn-default.back-button На главную
+
+	.container.top-container.registration-container
+		.row
+			.col-md-12.col-sm-12.col-xs-12.name-blog Dex1Cre
+			.col-md-12.col-sm-12.col-xs-12
+				.form-div
+					form(action="/registration" method="post")
+						.form-group
+							label(for="login") Login:
+							input(type="text" placeholder="Например: dex1cre" name="login" id="login").form-control
+						.form-group
+							label(for="password") Пароль:
+							input(type="password" placeholder="Например: JD%||xe" name="password" id="password").form-control
+						.form-group
+							label(for="repeat_password") Повторите пароль:
+							input(type="text" placeholder="Введите сюда тот пароль, что ввели выше" name="repeat_password" id="repeat_password").form-control
+						input(type="submit" value="Зарегистрироваться").btn.btn-primary#registration

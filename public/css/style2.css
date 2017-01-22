@@ -1,0 +1,41 @@
+.admin-menu {
+	margin-top: 100px;
+}
+
+/*Общие элементы у тегов с формами*/
+/*--------------------------------*/
+
+.form-div {
+	margin: 100px auto;
+
+	width: 400px;
+}
+
+.form-div .form-group * {
+	margin-left: 5px;
+}
+
+/*.delete-this {
+	display: none;
+}*/
+
+/*Стили отдельных элементов с формами*/
+/*-----------------------------------*/
+
+.form-div1, .form-div2, .form-div3, .form-div4 {
+	display: none;
+}
+
+/*Стили кнопки статуса*/
+/*--------------------*/
+.status-container {
+	position: relative;
+}
+
+.status-container .btn {
+	position: absolute;
+	top: 20px;
+	right: 50px;
+
+	display: none;
+}

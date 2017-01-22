@@ -1,0 +1,134 @@
+.top-container .row .name-blog {
+	font-size: 40pt;
+	text-align: center;
+}
+
+.top-container .row {
+	padding: 20px 0;
+}
+
+.top-container .row .form-enter form, 
+.top-container .row .form-enter a, 
+.top-container .row .col-md-1 a {
+	margin-top: 20px;
+}
+
+.top-container .row .col-md-1 a {
+	margin-left: -50px;
+}
+
+.top-container .row .form-enter * {
+	margin: 0 2px;
+
+	display: inline-block;
+}
+
+.top-container .reg  h4 {
+	margin-top: 30px !important;
+	margin-left: 380px !important;
+}
+
+@media screen and (max-width:991px)  {
+	.top-container .row .col-md-1 a {
+		margin-left: 0;
+	}
+
+	.top-container .reg  h4 {
+		margin-top: 0 !important;
+		margin-left: 0 !important;
+	}
+}
+
+@media screen and (max-width: 511px) and (min-width: 442px) {
+	.top-container .row .form-enter form input:last-child {
+		width: 400px;
+	}	
+}
+
+@media screen and (max-width: 441px) {
+	.top-container .row .form-enter form input {
+		margin-top: 2px;
+	}
+
+	.top-container .row .form-enter form input:last-child {
+		margin-left: 15px;
+	}
+}
+
+
+/*Полная статья*/
+/*---------------------------*/
+
+.theme-main-container {
+	margin-top: 15px;
+}
+
+/*Все статьи по этой теме*/
+/*-----------------------*/
+.all-articles {
+	margin-top: 30px;
+	padding: 15px 0 25px 0;
+
+	box-shadow: 0 0 .5px 0;
+}
+
+.all-articles span {
+	font-size: 15pt;
+}
+
+.all-articles .white-li a {
+	color: rgba(0,0,0, .6);
+}
+
+.all-articles .white-li a:hover {
+	color: black;
+}
+
+.all-articles .black-li {
+	background: rgba(0,0,0, .1);
+}
+
+.all-articles .black-li a {
+	/*color: rgba(255,255,255, .8);*/
+	color: rgba(0,0,0, .6);
+}
+
+.all-articles .black-li a:hover {
+	color: black;
+}
+
+/*Основная статья*/
+/*--------------------------*/
+
+.main-theme img {
+	margin-bottom: 15px;
+}
+
+/*Регистрация*/
+/*--------------------------*/
+
+.registration-container {
+	margin: 30px;
+}
+
+.form-div {
+	margin: 20px auto;
+
+	width: 400px;
+}
+
+.form-div .btn-primary {
+	width: 100%;
+}
+
+/*Кнопка для возвращения на главную страницу*/
+/*------------------------------------------*/
+
+.back-to-home-container {
+	position: relative;
+}
+
+.back-to-home-container .back-button {
+	position: fixed;
+	top: 30px;
+}

@@ -1,0 +1,45 @@
+doctype
+head
+	meta(charset="utf-8")
+	title My blog
+	link(rel="stylesheet" href="/css/style.css")
+	link(href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css", rel="stylesheet", integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u", crossorigin="anonymous")
+
+body
+	.container.top-container.zdes-need-img(style="padding-bottom: 200px; background: url(" + img + ") no-repeat; background-size: cover;")
+		.row
+			.col-md-3.name-blog Dex1Cre
+			.col-md-2.col-sm-12
+			.col-md-6.form-enter.col-sm-12
+				a(href="/") Статьи
+				form(action="/" method="post").form-inline
+					.form-group
+						input(type="text" placeholder="login" name="login").form-control
+					.form-group
+						input(type="password" placeholder="password" name="password").form-control
+					input(type="submit" value="Войти").btn.btn-success
+			.col-md-1.col-sm-12
+				a(href="/registration").btn.btn-primary Регистрация
+
+	.container.theme-main-container
+		.row
+			.col-md-3.col-sm-3.col-xs-12.all-articles
+				span Все статьи по этой теме
+				for i in themes
+					ul.nav
+						li
+							a(href="#")= i.title
+			.col-md-1.col-sm-1
+			.col-md-8.col-sm-8.col-xs-12.main-theme
+				h1= name_theme
+					small  последнее обновление
+
+				hr
+
+				h3= article.title
+					small= article.dtime
+				p= article.content
+				img(src= article.images style="max-width: 700px")
+
+script(src="//ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js")
+script(type="text/javascript" src="/js/script_theme.js")

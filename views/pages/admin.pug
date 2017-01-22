@@ -1,0 +1,93 @@
+doctype
+head
+	meta(charset="utf-8")
+	title 404! Not ...
+	link(rel="stylesheet" href="/css/style2.css")
+	link(href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css", rel="stylesheet", integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u", crossorigin="anonymous")
+	script(type="text/javascript" src="/js/script.js")
+
+body
+	.container.status-container
+		.btn.btn-default
+
+	.container
+		.row
+			.col-md-2.col-sm-2.col-xs-12
+				.admin-menu
+					h2 Themes:
+					ul.nav
+						li
+							a(href="#").new-theme - new theme
+						li
+							a(href="#").find-theme - find theme
+					br
+					h2 Articles:
+					ul.nav
+						li
+							a(href="#").new-article - new article
+						li
+							a(href="#").add-to-article - add to article
+						li
+							a(href="#").find-article - find article
+
+			.col-md-2.col-sm-2.col-xs-12
+			.col-md-9.col-sm-9.col-xs-12
+				.form-div.form-div1
+					h2 New theme
+					.form-group.form-inline
+						label(for="new-theme-name") Name of theme:
+						input(type="text" placeholder="Введите название темы" name="new-theme-name" id="new-theme-name").form-control
+					.form-group
+						label(for="new-theme-discription") Discription of theme:
+						textarea(type="text" placeholder="Введите описание темы" name="new-theme-discription" id="new-theme-discription").form-control
+					.form-group
+						label(for="new-theme-image") Image:
+						textarea(type="text" placeholder="Введите описание темы" name="new-theme-image" id="new-theme-image").form-control
+					button(name="new-theme" id="new-theme").btn.btn-success Add
+
+				.form-div.form-div2
+					.form-group.form-inline
+						label(for="find-theme-text") Find theme:
+						input(type="text" placeholder="Введите название темы" name="find-theme-text" id="find-theme-text").form-control
+						button(name="find-theme" id="find-theme").btn.btn-info.glyphicon.glyphicon-search
+					.delete-this
+						h3.title-theme
+						h3 Description:
+						p
+						button.btn.btn-danger.delete-btn1 Delete!
+
+				.form-div.form-div3
+					h2 New artilce
+					.form-group.form-inline
+						label(for="find-theme-text3") Find theme:
+						input(type="text" placeholder="Введите название темы" name="find-theme-text3" id="find-theme-text3").form-control
+						button(name="find-theme3" id="find-theme3").btn.btn-info.glyphicon.glyphicon-search
+					h2.theme-text3
+					br
+					.form-group.form-inline
+						label(for="new-article-name") Name of article:
+						input(type="text" placeholder="Введите название статьи" name="new-article-name" id="new-article-name").form-control
+					.form-group
+						label(for="new-article-discription") Text of article:
+						textarea(type="text" placeholder="Введите содержание статьи" name="new-article-discription" id="new-article-discription").form-control
+					.form-group
+						label(for="new-article-img-link") Link to the image
+						input(type="text" placeholder="Введите ссылку к изображению" name="new-article-img-link" id="new-article-img-link").form-control
+					button(name="new-article" id="new-article").btn.btn-success Add
+
+				.form-div.form-div4
+					.form-group.form-inline
+						label(for="find-theme-text2") Find theme:
+						input(type="text" placeholder="Введите название темы" name="find-theme-text2" id="find-theme-text2").form-control
+						button(name="find-theme2" id="find-theme2").btn.btn-info.glyphicon.glyphicon-search
+					h2.find-theme4
+					.form-group.form-inline
+						label(for="find-article-text2") Find article:
+						input(type="text" placeholder="Введите название статьи" name="find-article-text2" id="find-article-text2").form-control
+						button(name="find-article2" id="find-article2").btn.btn-info.glyphicon.glyphicon-search
+					.delete-this
+						h3.find-article2
+						button.btn.btn-danger.delete-btn Delete!
+
+script(src="//ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js")
+script(type="text/javascript" src="/js/script_main.js")
