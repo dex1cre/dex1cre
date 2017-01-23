@@ -92,14 +92,46 @@ app.get "/theme/:name/:id", (req, res) ->
 				db.each "SELECT images FROM themes WHERE title=$name",
 					$name: name
 					, (err, row) ->
-						db.all "SELECT title FROM themes WHERE title=$name",
-							$name: name
-							, (err, r) ->
-								res.render "pages/theme",
-									article: rows
-									name_theme: name
-									img: row.images
-									themes: r
+						db.all "SELECT * FROM articles WHERE id_theme=$id_theme",
+							$id_theme: id
+							, (err, ro) ->
+								db.all "SELECT * FROM content WHERE article_id=$id",
+									$id: rows.id
+									, (err, r) ->
+										if err
+											console.log err
+										res.render "pages/theme",
+											article: rows
+											name_theme: name
+											img: row.images
+											articles: ro
+											content: r
+
+app.get "/theme/:name/:id/:id_article", (req, res) ->
+	name = req.params.name
+	id = req.params.id
+	console.log "to theme with number #{id} and name #{name}"
+	db.serialize ->
+		db.each "SELECT * FROM articles WHERE id_theme=$id ORDER BY id DESC",
+			$id: id
+			, (err, rows) ->
+				db.each "SELECT images FROM themes WHERE title=$name",
+					$name: name
+					, (err, row) ->
+						db.all "SELECT * FROM articles WHERE id_theme=$id_theme",
+							$id_theme: id
+							, (err, ro) ->
+								db.all "SELECT * FROM content WHERE article_id=$id",
+									$id: rows.id
+									, (err, r) ->
+										if err
+											console.log err
+										res.render "pages/theme",
+											article: rows
+											name_theme: name
+											img: row.images
+											articles: ro
+											content: r
 
 app.route "/registration"
 	.get (req, res) ->
@@ -185,13 +217,11 @@ app.post "/new_article", (req, res) ->
 		db.each "SELECT id FROM themes WHERE title=$name",
 			$name: req.body.theme_name
 			, (err, row) ->
-				db.run "INSERT INTO articles(title, content, dtime, id_theme, images)
-					VALUES ($title, $content, $dtime, $id_theme, $image)",
+				db.run "INSERT INTO articles(title, dtime, id_theme)
+					VALUES ($title, $dtime, $id_theme)",
 					$title: req.body.new_article_name
-					$content: req.body.new_article_discription
 					$dtime: "#{d.getDate()}:#{d.getMonth() + 1}:#{d.getFullYear()}"
 					$id_theme: row.id
-					$image: req.body.image
 					, (err) ->
 						console.log "hey!new article --> #{err}"
 					res.json
@@ -201,28 +231,61 @@ app.post "/new_article", (req, res) ->
 
 app.post "/find-theme2", (req, res) ->
 	db.serialize ->
-		db.each "SELECT title FROM themes WHERE title=$name",
+		db.each "SELECT title, id FROM themes WHERE title=$name",
 			$name: req.body.theme_name
 			, (err, row) ->
 				res.json
 					title: row.title
+					id: row.id
 				console.log "hey! -- > #{err}" if err
 				# console.log "hey! -- > #{row.title}"
 
 app.post "/find-article", (req, res) ->
 	db.serialize ->
-		db.each "SELECT id FROM themes WHERE title=$name",
-			$name: req.body.theme_name
+		db.each "SELECT * FROM articles WHERE title=$name AND id_theme=$id",
+			$name: req.body.article_name
+			$id: req.body.id_theme
 			, (err, row) ->
-				console.log row.id
-				db.each "SELECT title FROM articles WHERE (id=$id) AND (title=$title)",
-					$id: row.id
-					$title: req.body.article_name
-					, (err, t) ->
+				if err
+					console.log err
+				res.json
+					title: row.title
+					id: row.id
+
+app.post "/remove_article", (req, res) ->
+	db.serialize ->
+		db.run "DELETE FROM articles WHERE title=$name AND id_theme=$id",
+			$name: req.body.article_name
+			$id: req.body.id_theme
+			, (err) ->
+				if err
+					console.log err
+				res.json
+					data: "Okay"
+
+app.post "/new_in_article", (req, res) ->
+	db.serialize ->
+		db.each "SELECT id FROM articles WHERE title=$name AND id_theme=$id",
+			$name: req.body.article_name
+			$id: req.body.id_theme
+			, (err, row) ->
+				if err
+					console.log err
+				id = row.id
+				if req.body.checkbox == "yes"
+					status = 1
+				else if req.body.checkbox == "no"
+					status = 0
+				db.run "INSERT INTO content(content, article_id, status)
+					VALUES($content, $article_id, $status)",
+					$content: req.body.content
+					$article_id: id
+					$status: status
+					, (err) ->
+						if err
+							console.log err
 						res.json
-							title: t
-						console.log "hey! --> #{err}" if err
-				console.log "hey! --> #{err}" if err
+							data: "Okay"
 
 server = app.listen 8080, ->
 	console.log "Server is started on port 8080"

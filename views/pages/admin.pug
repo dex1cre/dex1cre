@@ -82,12 +82,23 @@ body
 						button(name="find-theme2" id="find-theme2").btn.btn-info.glyphicon.glyphicon-search
 					h2.find-theme4
 					.form-group.form-inline
+						input(type="text" name="id_theme" style="display: none;").id_theme
 						label(for="find-article-text2") Find article:
 						input(type="text" placeholder="Введите название статьи" name="find-article-text2" id="find-article-text2").form-control
 						button(name="find-article2" id="find-article2").btn.btn-info.glyphicon.glyphicon-search
 					.delete-this
 						h3.find-article2
-						button.btn.btn-danger.delete-btn Delete!
+						button.btn.btn-danger.delete-btn2 Delete!
+						br
+						br
+						.form-group
+							label(for="new-data") Добавить:
+							textarea(type="text" name="new-data" id="new-data" placeholder="Введите сюда текст").form-control
+						.form-group
+							label(for="image-qw") Это изображение?:
+							input(type="checkbox" name="image-qw" id="image-qw" value="yes").check-image
+						.form-group
+							input(type="submit").btn.btn-success.btn-new-in-article
 
 script(src="//ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js")
 script(type="text/javascript" src="/js/script_main.js")

@@ -110,14 +110,57 @@
         return db.each("SELECT images FROM themes WHERE title=$name", {
           $name: name
         }, function(err, row) {
-          return db.all("SELECT title FROM themes WHERE title=$name", {
-            $name: name
-          }, function(err, r) {
-            return res.render("pages/theme", {
-              article: rows,
-              name_theme: name,
-              img: row.images,
-              themes: r
+          return db.all("SELECT * FROM articles WHERE id_theme=$id_theme", {
+            $id_theme: id
+          }, function(err, ro) {
+            return db.all("SELECT * FROM content WHERE article_id=$id", {
+              $id: rows.id
+            }, function(err, r) {
+              if (err) {
+                console.log(err);
+              }
+              return res.render("pages/theme", {
+                article: rows,
+                name_theme: name,
+                img: row.images,
+                articles: ro,
+                content: r
+              });
+            });
+          });
+        });
+      });
+    });
+  });
+
+  app.get("/theme/:name/:id/:id_article", function(req, res) {
+    var id, name;
+    name = req.params.name;
+    id = req.params.id;
+    console.log("to theme with number " + id + " and name " + name);
+    return db.serialize(function() {
+      return db.each("SELECT * FROM articles WHERE id_theme=$id ORDER BY id DESC", {
+        $id: id
+      }, function(err, rows) {
+        return db.each("SELECT images FROM themes WHERE title=$name", {
+          $name: name
+        }, function(err, row) {
+          return db.all("SELECT * FROM articles WHERE id_theme=$id_theme", {
+            $id_theme: id
+          }, function(err, ro) {
+            return db.all("SELECT * FROM content WHERE article_id=$id", {
+              $id: rows.id
+            }, function(err, r) {
+              if (err) {
+                console.log(err);
+              }
+              return res.render("pages/theme", {
+                article: rows,
+                name_theme: name,
+                img: row.images,
+                articles: ro,
+                content: r
+              });
             });
           });
         });
@@ -231,12 +274,10 @@
       return db.each("SELECT id FROM themes WHERE title=$name", {
         $name: req.body.theme_name
       }, function(err, row) {
-        db.run("INSERT INTO articles(title, content, dtime, id_theme, images) VALUES ($title, $content, $dtime, $id_theme, $image)", {
+        db.run("INSERT INTO articles(title, dtime, id_theme) VALUES ($title, $dtime, $id_theme)", {
           $title: req.body.new_article_name,
-          $content: req.body.new_article_discription,
           $dtime: (d.getDate()) + ":" + (d.getMonth() + 1) + ":" + (d.getFullYear()),
-          $id_theme: row.id,
-          $image: req.body.image
+          $id_theme: row.id
         }, function(err) {
           return console.log("hey!new article --> " + err);
         }, res.json({
@@ -252,11 +293,12 @@
 
   app.post("/find-theme2", function(req, res) {
     return db.serialize(function() {
-      return db.each("SELECT title FROM themes WHERE title=$name", {
+      return db.each("SELECT title, id FROM themes WHERE title=$name", {
         $name: req.body.theme_name
       }, function(err, row) {
         res.json({
-          title: row.title
+          title: row.title,
+          id: row.id
         });
         if (err) {
           return console.log("hey! -- > " + err);
@@ -267,24 +309,65 @@
 
   app.post("/find-article", function(req, res) {
     return db.serialize(function() {
-      return db.each("SELECT id FROM themes WHERE title=$name", {
-        $name: req.body.theme_name
+      return db.each("SELECT * FROM articles WHERE title=$name AND id_theme=$id", {
+        $name: req.body.article_name,
+        $id: req.body.id_theme
       }, function(err, row) {
-        console.log(row.id);
-        db.each("SELECT title FROM articles WHERE (id=$id) AND (title=$title)", {
-          $id: row.id,
-          $title: req.body.article_name
-        }, function(err, t) {
-          res.json({
-            title: t
-          });
-          if (err) {
-            return console.log("hey! --> " + err);
-          }
-        });
         if (err) {
-          return console.log("hey! --> " + err);
+          console.log(err);
         }
+        return res.json({
+          title: row.title,
+          id: row.id
+        });
+      });
+    });
+  });
+
+  app.post("/remove_article", function(req, res) {
+    return db.serialize(function() {
+      return db.run("DELETE FROM articles WHERE title=$name AND id_theme=$id", {
+        $name: req.body.article_name,
+        $id: req.body.id_theme
+      }, function(err) {
+        if (err) {
+          console.log(err);
+        }
+        return res.json({
+          data: "Okay"
+        });
+      });
+    });
+  });
+
+  app.post("/new_in_article", function(req, res) {
+    return db.serialize(function() {
+      return db.each("SELECT id FROM articles WHERE title=$name AND id_theme=$id", {
+        $name: req.body.article_name,
+        $id: req.body.id_theme
+      }, function(err, row) {
+        var id, status;
+        if (err) {
+          console.log(err);
+        }
+        id = row.id;
+        if (req.body.checkbox === "yes") {
+          status = 1;
+        } else if (req.body.checkbox === "no") {
+          status = 0;
+        }
+        return db.run("INSERT INTO content(content, article_id, status) VALUES($content, $article_id, $status)", {
+          $content: req.body.content,
+          $article_id: id,
+          $status: status
+        }, function(err) {
+          if (err) {
+            console.log(err);
+          }
+          return res.json({
+            data: "Okay"
+          });
+        });
       });
     });
   });

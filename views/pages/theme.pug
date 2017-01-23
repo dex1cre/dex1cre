@@ -25,10 +25,10 @@ body
 		.row
 			.col-md-3.col-sm-3.col-xs-12.all-articles
 				span Все статьи по этой теме
-				for i in themes
+				for i in articles
 					ul.nav
 						li
-							a(href="#")= i.title
+							a(href="/theme/" + name_theme + "/" + i.id_theme + "/" + i.id)= i.title
 			.col-md-1.col-sm-1
 			.col-md-8.col-sm-8.col-xs-12.main-theme
 				h1= name_theme
@@ -38,8 +38,11 @@ body
 
 				h3= article.title
 					small= article.dtime
-				p= article.content
-				img(src= article.images style="max-width: 700px")
+				for i in content
+					if i.status == "0"
+						p= i.content
+					else if i.status == "1"
+						img(src= i.content style="max-width: 700px")
 
 script(src="//ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js")
 script(type="text/javascript" src="/js/script_theme.js")
