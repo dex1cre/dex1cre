@@ -374,7 +374,7 @@
     });
   });
 
-  server = app.listen(8080, function() {
+  server = app.listen(80, function() {
     return console.log("Server is started on port 8080");
   });
 

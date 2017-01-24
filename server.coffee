@@ -289,5 +289,5 @@ app.post "/new_in_article", (req, res) ->
 						res.json
 							data: "Okay"
 
-server = app.listen 8080, ->
+server = app.listen 80, ->
 	console.log "Server is started on port 8080"
