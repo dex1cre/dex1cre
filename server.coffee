@@ -274,6 +274,8 @@ app.post "/new_in_article", (req, res) ->
 				id = row.id
 				if req.body.checkbox == "yes"
 					status = 1
+				else if req.body.checkbox == "1"
+					status = 2
 				else if req.body.checkbox == "no"
 					status = 0
 				db.run "INSERT INTO content(content, article_id, status)
@@ -287,5 +289,5 @@ app.post "/new_in_article", (req, res) ->
 						res.json
 							data: "Okay"
 
-server = app.listen 80, ->
+server = app.listen 8080, ->
 	console.log "Server is started on port 8080"

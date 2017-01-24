@@ -353,6 +353,8 @@
         id = row.id;
         if (req.body.checkbox === "yes") {
           status = 1;
+        } else if (req.body.checkbox === "1") {
+          status = 2;
         } else if (req.body.checkbox === "no") {
           status = 0;
         }
@@ -372,7 +374,7 @@
     });
   });
 
-  server = app.listen(80, function() {
+  server = app.listen(8080, function() {
     return console.log("Server is started on port 8080");
   });
 

@@ -153,6 +153,8 @@
       var v;
       if ($(".check-image").prop("checked")) {
         v = "yes";
+      } else if ($(".check-cod").prop("checked")) {
+        v = "1";
       } else {
         v = "no";
       }

@@ -43,6 +43,8 @@ body
 						p= i.content
 					else if i.status == "1"
 						img(src= i.content style="max-width: 700px")
+					else if i.status == "2"
+						pre= i.content
 
 script(src="//ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js")
 script(type="text/javascript" src="/js/script_theme.js")
