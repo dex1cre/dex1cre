@@ -5,21 +5,41 @@ head
 	link(rel="stylesheet" href="/css/style.css")
 	link(href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css", rel="stylesheet", integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u", crossorigin="anonymous")
 
+	style.
+		.top-container .name-blog, 
+		.top-container .form-enter .not-reg a,
+		.top-container .form-enter .reg h4 {
+			color: white;
+			text-shadow: 0 3px 7px black;
+		}
+
 body
 	.container.top-container.zdes-need-img(style="padding-bottom: 200px; background: url(" + img + ") no-repeat; background-size: cover;")
 		.row
 			.col-md-3.name-blog Dex1Cre
 			.col-md-2.col-sm-12
 			.col-md-6.form-enter.col-sm-12
-				a(href="/") Статьи
-				form(action="/" method="post").form-inline
-					.form-group
-						input(type="text" placeholder="login" name="login").form-control
-					.form-group
-						input(type="password" placeholder="password" name="password").form-control
-					input(type="submit" value="Войти").btn.btn-success
+
+				if user
+					span.reg
+						h4= "Your login:  " + login
+				else
+					span.not-reg
+						a(href="/") Статьи
+						form(action="/" method="post").form-inline
+							.form-group
+								input(type="text" placeholder="login" name="login").form-control
+							.form-group
+								input(type="password" placeholder="password" name="password").form-control
+							input(type="submit" value="Войти").btn.btn-success
+
 			.col-md-1.col-sm-12
-				a(href="/registration").btn.btn-primary Регистрация
+				if user
+					span.reg
+						a(href="/getBack").btn.btn-primary Выход
+				else
+					span.not-reg
+						a(href="/registration").btn.btn-primary Регистрация
 
 	.container.theme-main-container
 		.row
@@ -45,6 +65,8 @@ body
 						img(src= i.content style="max-width: 700px")
 					else if i.status == "2"
 						pre= i.content
+					else if i.status == "3"
+						h3= i.content
 
 script(src="//ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js")
 script(type="text/javascript" src="/js/script_theme.js")

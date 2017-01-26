@@ -98,10 +98,20 @@
     return res.redirect("/");
   });
 
-  app.get("/theme/:name/:id", function(req, res) {
-    var id, name;
+  app.route("/theme/:name/:id").get(function(req, res) {
+    var id, login, name, password;
     name = req.params.name;
     id = req.params.id;
+    if (lSt.getItem("login")) {
+      login = lSt.getItem("login");
+    } else {
+      login = "";
+    }
+    if (lSt.getItem("password")) {
+      password = lSt.getItem("password");
+    } else {
+      password = "";
+    }
     console.log("to theme with number " + id + " and name " + name);
     return db.serialize(function() {
       return db.each("SELECT * FROM articles WHERE id_theme=$id ORDER BY id DESC", {
@@ -116,19 +126,51 @@
             return db.all("SELECT * FROM content WHERE article_id=$id", {
               $id: rows.id
             }, function(err, r) {
+              var user;
               if (err) {
                 console.log(err);
+              }
+              if (login !== "" && password !== "") {
+                user = true;
+              } else {
+                user = false;
               }
               return res.render("pages/theme", {
                 article: rows,
                 name_theme: name,
                 img: row.images,
                 articles: ro,
-                content: r
+                content: r,
+                user: user
               });
             });
           });
         });
+      });
+    });
+  }).post(function(req, res) {
+    var id, login, name, password;
+    name = req.params.name;
+    id = req.params.id;
+    login = req.body.login;
+    password = req.body.password;
+    if (login === "" || password === "") {
+      res.send("<p> Пожалуйста заполните поля login и пароль, прежде чем нажимать кнопку ВОЙТИ! Ты же это и так понимаешь, что тупить то?</p>");
+    }
+    return db.serialize(function() {
+      return db.all("SELECT * FROM users WHERE (login=$login) AND (password=$password)", {
+        $login: login,
+        $password: password
+      }, function(err, rows) {
+        if (err) {
+          return console.log(err);
+        } else if (!rows[0]) {
+          return res.send("<p>Тут что-то не то... Введён либо неверный логин, либо неверный пароль, либо вы вообще не зарегестрированны и просто пытаетесь взломать какого-то пользователя, чтобы пошутить, ах хитрец. Так поступать нельзя, как тебе совесть то позволяет, кошмар какой! Ух!</p>");
+        } else {
+          lSt.setItem("login", login);
+          lSt.setItem("password", password);
+          return res.redirect("/theme/" + name + "/" + id);
+        }
       });
     });
   });
@@ -355,6 +397,8 @@
           status = 1;
         } else if (req.body.checkbox === "1") {
           status = 2;
+        } else if (req.body.checkbox === "3") {
+          status = 3;
         } else if (req.body.checkbox === "no") {
           status = 0;
         }
@@ -374,7 +418,7 @@
     });
   });
 
-  server = app.listen(80, function() {
+  server = app.listen(8080, function() {
     return console.log("Server is started on port 8080");
   });
 

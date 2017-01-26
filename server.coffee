@@ -81,31 +81,69 @@ app.get "/getBack", (req, res) ->
 	lSt.removeItem "password"
 	res.redirect "/"
 
-app.get "/theme/:name/:id", (req, res) ->
-	name = req.params.name
-	id = req.params.id
-	console.log "to theme with number #{id} and name #{name}"
-	db.serialize ->
-		db.each "SELECT * FROM articles WHERE id_theme=$id ORDER BY id DESC",
-			$id: id
-			, (err, rows) ->
-				db.each "SELECT images FROM themes WHERE title=$name",
-					$name: name
-					, (err, row) ->
-						db.all "SELECT * FROM articles WHERE id_theme=$id_theme",
-							$id_theme: id
-							, (err, ro) ->
-								db.all "SELECT * FROM content WHERE article_id=$id",
-									$id: rows.id
-									, (err, r) ->
-										if err
-											console.log err
-										res.render "pages/theme",
-											article: rows
-											name_theme: name
-											img: row.images
-											articles: ro
-											content: r
+app.route "/theme/:name/:id"
+	.get (req, res) ->
+		name = req.params.name
+		id = req.params.id
+		if lSt.getItem "login"
+			login = lSt.getItem "login"
+		else
+			login = ""
+
+		if lSt.getItem "password"
+			password = lSt.getItem "password"
+		else
+			password = ""
+		console.log "to theme with number #{id} and name #{name}"
+		db.serialize ->
+			db.each "SELECT * FROM articles WHERE id_theme=$id ORDER BY id DESC",
+				$id: id
+				, (err, rows) ->
+					db.each "SELECT images FROM themes WHERE title=$name",
+						$name: name
+						, (err, row) ->
+							db.all "SELECT * FROM articles WHERE id_theme=$id_theme",
+								$id_theme: id
+								, (err, ro) ->
+									db.all "SELECT * FROM content WHERE article_id=$id",
+										$id: rows.id
+										, (err, r) ->
+											if err
+												console.log err
+
+											if login != "" and password != ""
+												user = true
+											else
+												user = false
+
+											res.render "pages/theme",
+												article: rows
+												name_theme: name
+												img: row.images
+												articles: ro
+												content: r
+												user: user
+
+	.post (req, res) ->
+		name = req.params.name
+		id = req.params.id
+		login = req.body.login
+		password = req.body.password
+		if login == "" or password == ""
+			res.send "<p> Пожалуйста заполните поля login и пароль, прежде чем нажимать кнопку ВОЙТИ! Ты же это и так понимаешь, что тупить то?</p>"
+		db.serialize ->
+			db.all "SELECT * FROM users WHERE (login=$login) AND (password=$password)",
+				$login: login
+				$password: password
+				, (err, rows) ->
+					if err
+						console.log err
+					else if !rows[0]
+						res.send "<p>Тут что-то не то... Введён либо неверный логин, либо неверный пароль, либо вы вообще не зарегестрированны и просто пытаетесь взломать какого-то пользователя, чтобы пошутить, ах хитрец. Так поступать нельзя, как тебе совесть то позволяет, кошмар какой! Ух!</p>"
+					else
+						lSt.setItem "login", login
+						lSt.setItem "password", password
+						res.redirect "/theme/" + name + "/" + id
 
 app.get "/theme/:name/:id/:id_article", (req, res) ->
 	name = req.params.name
@@ -276,6 +314,8 @@ app.post "/new_in_article", (req, res) ->
 					status = 1
 				else if req.body.checkbox == "1"
 					status = 2
+				else if req.body.checkbox == "3"
+					status = 3
 				else if req.body.checkbox == "no"
 					status = 0
 				db.run "INSERT INTO content(content, article_id, status)
@@ -289,5 +329,5 @@ app.post "/new_in_article", (req, res) ->
 						res.json
 							data: "Okay"
 
-server = app.listen 80, ->
+server = app.listen 8080, ->
 	console.log "Server is started on port 8080"

@@ -155,6 +155,8 @@
         v = "yes";
       } else if ($(".check-cod").prop("checked")) {
         v = "1";
+      } else if ($(".check-h3").prop("checked")) {
+        v = "3";
       } else {
         v = "no";
       }
