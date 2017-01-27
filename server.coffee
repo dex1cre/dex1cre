@@ -148,6 +148,7 @@ app.route "/theme/:name/:id"
 app.get "/theme/:name/:id/:id_article", (req, res) ->
 	name = req.params.name
 	id = req.params.id
+	id_article = req.params.id_article
 	console.log "to theme with number #{id} and name #{name}"
 	db.serialize ->
 		db.each "SELECT * FROM articles WHERE id_theme=$id ORDER BY id DESC",
@@ -156,8 +157,8 @@ app.get "/theme/:name/:id/:id_article", (req, res) ->
 				db.each "SELECT images FROM themes WHERE title=$name",
 					$name: name
 					, (err, row) ->
-						db.all "SELECT * FROM articles WHERE id_theme=$id_theme",
-							$id_theme: id
+						db.all "SELECT * FROM articles WHERE id=$id_article",
+							$id_article: id_article
 							, (err, ro) ->
 								db.all "SELECT * FROM content WHERE article_id=$id",
 									$id: rows.id

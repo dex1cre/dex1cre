@@ -176,9 +176,10 @@
   });
 
   app.get("/theme/:name/:id/:id_article", function(req, res) {
-    var id, name;
+    var id, id_article, name;
     name = req.params.name;
     id = req.params.id;
+    id_article = req.params.id_article;
     console.log("to theme with number " + id + " and name " + name);
     return db.serialize(function() {
       return db.each("SELECT * FROM articles WHERE id_theme=$id ORDER BY id DESC", {
@@ -187,8 +188,8 @@
         return db.each("SELECT images FROM themes WHERE title=$name", {
           $name: name
         }, function(err, row) {
-          return db.all("SELECT * FROM articles WHERE id_theme=$id_theme", {
-            $id_theme: id
+          return db.all("SELECT * FROM articles WHERE id=$id_article", {
+            $id_article: id_article
           }, function(err, ro) {
             return db.all("SELECT * FROM content WHERE article_id=$id", {
               $id: rows.id
