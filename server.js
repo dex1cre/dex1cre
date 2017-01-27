@@ -175,24 +175,24 @@
     });
   });
 
-  app.get("/theme/:name/:id/:id_article", function(req, res) {
+  app.route("/theme/:name/:id/:id_article").get(function(req, res) {
     var id, id_article, name;
     name = req.params.name;
     id = req.params.id;
     id_article = req.params.id_article;
     console.log("to theme with number " + id + " and name " + name);
     return db.serialize(function() {
-      return db.each("SELECT * FROM articles WHERE id_theme=$id ORDER BY id DESC", {
-        $id: id
+      return db.each("SELECT * FROM articles WHERE id=$id_article", {
+        $id_article: id_article
       }, function(err, rows) {
         return db.each("SELECT images FROM themes WHERE title=$name", {
           $name: name
         }, function(err, row) {
-          return db.all("SELECT * FROM articles WHERE id=$id_article", {
-            $id_article: id_article
+          return db.all("SELECT * FROM articles WHERE id_theme=$id_theme", {
+            $id_theme: id
           }, function(err, ro) {
             return db.all("SELECT * FROM content WHERE article_id=$id", {
-              $id: rows.id
+              $id: id_article
             }, function(err, r) {
               if (err) {
                 console.log(err);
@@ -207,6 +207,31 @@
             });
           });
         });
+      });
+    });
+  }).post(function(req, res) {
+    var id, login, name, password;
+    name = req.params.name;
+    id = req.params.id;
+    login = req.body.login;
+    password = req.body.password;
+    if (login === "" || password === "") {
+      res.send("<p> Пожалуйста заполните поля login и пароль, прежде чем нажимать кнопку ВОЙТИ! Ты же это и так понимаешь, что тупить то?</p>");
+    }
+    return db.serialize(function() {
+      return db.all("SELECT * FROM users WHERE (login=$login) AND (password=$password)", {
+        $login: login,
+        $password: password
+      }, function(err, rows) {
+        if (err) {
+          return console.log(err);
+        } else if (!rows[0]) {
+          return res.send("<p>Тут что-то не то... Введён либо неверный логин, либо неверный пароль, либо вы вообще не зарегестрированны и просто пытаетесь взломать какого-то пользователя, чтобы пошутить, ах хитрец. Так поступать нельзя, как тебе совесть то позволяет, кошмар какой! Ух!</p>");
+        } else {
+          lSt.setItem("login", login);
+          lSt.setItem("password", password);
+          return res.redirect("/theme/" + name + "/" + id);
+        }
       });
     });
   });

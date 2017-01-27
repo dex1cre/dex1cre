@@ -145,7 +145,7 @@ app.route "/theme/:name/:id"
 						lSt.setItem "password", password
 						res.redirect "/theme/" + name + "/" + id
 
-app.rout "/theme/:name/:id/:id_article"
+app.route "/theme/:name/:id/:id_article"
 	.get (req, res) ->
 		name = req.params.name
 		id = req.params.id
@@ -162,7 +162,7 @@ app.rout "/theme/:name/:id/:id_article"
 								$id_theme: id
 								, (err, ro) ->
 									db.all "SELECT * FROM content WHERE article_id=$id",
-										$id: rows.id
+										$id: id_article
 										, (err, r) ->
 											if err
 												console.log err
