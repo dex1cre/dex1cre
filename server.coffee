@@ -145,32 +145,53 @@ app.route "/theme/:name/:id"
 						lSt.setItem "password", password
 						res.redirect "/theme/" + name + "/" + id
 
-app.get "/theme/:name/:id/:id_article", (req, res) ->
-	name = req.params.name
-	id = req.params.id
-	id_article = req.params.id_article
-	console.log "to theme with number #{id} and name #{name}"
-	db.serialize ->
-		db.each "SELECT * FROM articles WHERE id_theme=$id ORDER BY id DESC",
-			$id: id
-			, (err, rows) ->
-				db.each "SELECT images FROM themes WHERE title=$name",
-					$name: name
-					, (err, row) ->
-						db.all "SELECT * FROM articles WHERE id=$id_article",
-							$id_article: id_article
-							, (err, ro) ->
-								db.all "SELECT * FROM content WHERE article_id=$id",
-									$id: rows.id
-									, (err, r) ->
-										if err
-											console.log err
-										res.render "pages/theme",
-											article: rows
-											name_theme: name
-											img: row.images
-											articles: ro
-											content: r
+app.rout "/theme/:name/:id/:id_article"
+	.get (req, res) ->
+		name = req.params.name
+		id = req.params.id
+		id_article = req.params.id_article
+		console.log "to theme with number #{id} and name #{name}"
+		db.serialize ->
+			db.each "SELECT * FROM articles WHERE id=$id_article",
+				$id_article: id_article
+				, (err, rows) ->
+					db.each "SELECT images FROM themes WHERE title=$name",
+						$name: name
+						, (err, row) ->
+							db.all "SELECT * FROM articles WHERE id_theme=$id_theme",
+								$id_theme: id
+								, (err, ro) ->
+									db.all "SELECT * FROM content WHERE article_id=$id",
+										$id: rows.id
+										, (err, r) ->
+											if err
+												console.log err
+											res.render "pages/theme",
+												article: rows
+												name_theme: name
+												img: row.images
+												articles: ro
+												content: r
+	.post (req, res) ->
+		name = req.params.name
+		id = req.params.id
+		login = req.body.login
+		password = req.body.password
+		if login == "" or password == ""
+			res.send "<p> Пожалуйста заполните поля login и пароль, прежде чем нажимать кнопку ВОЙТИ! Ты же это и так понимаешь, что тупить то?</p>"
+		db.serialize ->
+			db.all "SELECT * FROM users WHERE (login=$login) AND (password=$password)",
+				$login: login
+				$password: password
+				, (err, rows) ->
+					if err
+						console.log err
+					else if !rows[0]
+						res.send "<p>Тут что-то не то... Введён либо неверный логин, либо неверный пароль, либо вы вообще не зарегестрированны и просто пытаетесь взломать какого-то пользователя, чтобы пошутить, ах хитрец. Так поступать нельзя, как тебе совесть то позволяет, кошмар какой! Ух!</p>"
+					else
+						lSt.setItem "login", login
+						lSt.setItem "password", password
+						res.redirect "/theme/" + name + "/" + id
 
 app.route "/registration"
 	.get (req, res) ->
